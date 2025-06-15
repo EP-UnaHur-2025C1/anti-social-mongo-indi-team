@@ -1,5 +1,5 @@
 const Post = require('../models/post');
-const post_Images = require('../models/post_Images');
+const Post_Images = require('../models/Post_Images');
 
 const obtenerPosts = async (req, res) => {
     try {
@@ -16,11 +16,7 @@ const obtenerPosts = async (req, res) => {
 
 const crearPost = async (req, res) => {
   try {
-    const { userId, description } = req.body;
-
-    if (!userId || !description) {
-      return res.status(400).json({ message: 'Los campos "userId" y "description" son obligatorios' });
-    }
+    const { userId, description } = req.body
 
     const nuevoPost = new Post({
       user: userId,
@@ -34,7 +30,7 @@ const crearPost = async (req, res) => {
         imageUrl: file.path
       }));
 
-      const imagenesGuardadas = await Post_Image.insertMany(imagenes);
+      const imagenesGuardadas = await Post_Images.insertMany(imagenes);
 
       nuevoPost.images = imagenesGuardadas.map(img => img._id);
       await nuevoPost.save();
@@ -42,7 +38,7 @@ const crearPost = async (req, res) => {
     const postConImagenes = await Post.findById(nuevoPost._id)
       .populate('images');
 
-    return res.status(201).json(postConImagenes);
+    return res.status(201).json({message: "Publicación creada exitosamente", postConImagenes});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear la publicación' });
@@ -57,7 +53,7 @@ const actualizarPost = async (req, res) => {
             runValidators: true
         })
 
-        await post_Images.deleteMany({
+        await Post_Images.deleteMany({
             postId: id
         })
 
@@ -71,12 +67,15 @@ const actualizarPost = async (req, res) => {
                 postId: id,
                 imageUrl: url.imageUrl
             }))
-            await post_Images.insertMany(imagenesPost)
+            await Post_Images.insertMany(imagenesPost)
             await postActualizado.save()
         }
 
-        const post = await Post.findByIdAndUpdate(id).populate('images')
-        res.status(201).json(post);
+        const post = await Post.findByIdAndUpdate(id, imagenesPost, {
+            new: true,
+            runValidators: true
+        }).populate('images', 'imageUrl')
+        res.status(200).json(post);
     } catch (error) {
         res.status(400).json({ mensaje: 'Error al actualizar el autor', error })
     }
@@ -86,10 +85,12 @@ const eliminarPost = async (req, res) => {
     try {
         const { id } = req.params
         const post = await findByIdAndDelete(id)
-        if(!post){
-            return res.status(404).json({message: 'Publicación no encontrada'});
-        }
-        res.status(200).json({message: 'Publicación eliminada'});
+        
+        await Post_Images.deleteMany({
+            postId: id
+        })
+
+        res.status(200).json({message: 'Publicación eliminada', post});
     } catch (error) {
         res.status(500).json({error: 'Error al eliminar la publicación'});
     }
@@ -98,7 +99,7 @@ const eliminarPost = async (req, res) => {
 const eliminarImagenPost = async (req, res) => {
     try {
         const { id, imageId } = req.params
-        const post = await post_Images.findByIdAndDelete(id)
+        const post = await Post_Images.findByIdAndDelete(id)
         if(!post){
             return res.status(404).json({message: 'Publicacion no encontrada'});
         }
@@ -122,10 +123,7 @@ const actualizarImagenPost = async (req, res) => {
         const { imageUrl } = req.body
 
         const post = await Post.findById(id);
-        if(!post){
-            return res.status(404).json({message: 'Publicación no encontrada'}) 
-        }
-
+        
         const imagenesActualizadas = post.images.id(imageId)
         if(!imagenesActualizadas){
             return res.status(404).json({message: 'Imagen no encontrada'})

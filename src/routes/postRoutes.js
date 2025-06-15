@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = Router()
-const postController = require('../controllers/userController')
+const postController = require('../controllers/postController')
 const postMiddleware = require('../middlewares/postMiddleware')
 
 //rutas

@@ -12,4 +12,4 @@ const post_ImagesSchema = new mongoose.Schema({
     }
 })
 
-module.exports = post_ImagesSchema
+module.exports = mongoose.model('Post_Images', post_ImagesSchema)
