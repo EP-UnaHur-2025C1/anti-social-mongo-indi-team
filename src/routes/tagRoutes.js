@@ -4,7 +4,7 @@ const tagController = require('../controllers/tagController')
 
 router.get("/", tagController.obtenerTags);
 router.post("/", tagController.crearTag);
-router.put("/:id", genericMiddleware.existsModelById(Tag) ,tagController.actualizarTag);
+router.put("/:id", tagController.actualizarTag);
 router.delete("/:id", tagController.eliminarTag);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Post_Images } = require('../models/post_Images')
+const Post_Images  = require('../models/Post_Images')
 
 const obtenerImagenes = async (req, res) => {
     try {
