@@ -5,7 +5,7 @@ const User = require('../models/user')
 
 const obtenerPosts = async (req, res) => {
    try {
-       const posts = await Post.find().select('-__v').populate('images', '-__v').populate('tags' , '-__v')
+       const posts = await Post.find().select('-__v').populate('images', '-__v').populate('tags' , '-__v').populate('comment', '-__v')
        if(!posts){
            res.status(204).json({message: 'No hay contenido' })
        }
@@ -151,35 +151,27 @@ const eliminarImagenPost = async (req, res) => {
 
 
 const actualizarImagenPost = async (req, res) => {
-   try {
-       const postId = req.params.id
-       const  imageId = req.params.imageId
-       const  imageUrl  = req.body
-
-
-       const post = await Post.findById(postId);
-
-
-       if(!post){
-           return res.status(404).json({message: 'Publicacion no encontrada'});
-       }
-
-
-       const imagenesActualizadas = Post_Images.findOneAndUpdate(
-           {_id: imageId, postId: postId},
-           {imageUrl: imageUrl},
-           {new: true, runValidators: true}
-       )
-
-
-       if(!imagenesActualizadas){
-           return res.status(404).json({message: 'Imagen no encontrada'})
-       }
-      
-       res.status(200).json({message: 'Imagen actualizada exitosamente'})
-   } catch (error) {
-       res.status(500).json({error: 'Error al actualizar la publicación'})
-   }
+    try {
+         const postId = req.params.id
+         const imageId = req.params.imageId
+         const { imageUrl } = req.body
+            const post = await Post.findById(postId)
+            if(!post){
+                return res.status(404).json({message: 'Publicacion no encontrada'});
+            }
+            const imagenActualizada = await Post_Images.findOneAndUpdate(
+                { _id: imageId, postId: postId },
+                { imageUrl: imageUrl },
+                { new: true, runValidators: true }
+            )
+            if(!imagenActualizada){
+                return res.status(404).json({message: 'Imagen no encontrada'})
+            }
+            res.status(200).json({message: 'Imagen actualizada exitosamente', imagen: imagenActualizada})
+        }
+    catch (error) {
+        res.status(500).json({error: 'Error al actualizar la imagen'})
+    }
 }
 
 

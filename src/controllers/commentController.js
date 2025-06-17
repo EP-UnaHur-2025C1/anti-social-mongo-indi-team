@@ -1,4 +1,5 @@
 const Comment = require('../models/comment')
+const Post = require('../models/post')
 
 const obtenerComentarios = async (req, res) => {
     try {
@@ -15,10 +16,16 @@ const obtenerComentarios = async (req, res) => {
 const crearComentario = async (req, res) => {
     try {
         const { postId, userId, text } = req.body
-    
-        const comentario = new Comment({postId, userId, text})
+        const post = await Post.findById(postId)
+        if(!post){
+            return res.status(404).json({error: "Publicación no encontrada"})
+        }
+        const comentario = new Comment({ postId, userId, text })
         await comentario.save()
-        res.status(201).json(comentario)
+        post.comment.push(comentario._id)
+        await post.save()
+        res.status(201).json({ message: "Comentario creado exitosamente", comentario })
+
     } catch (error) {
         res.status(400).json({error: "Error al crear el comentario"})
     }
