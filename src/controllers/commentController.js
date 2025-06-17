@@ -1,6 +1,4 @@
 const Comment = require('../models/comment')
-const Post = require('../models/post')
-const User = require('../models/user')
 
 const obtenerComentarios = async (req, res) => {
     try {
@@ -27,25 +25,30 @@ const crearComentario = async (req, res) => {
 }
 
 const actualizarComentario = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { text } = req.body
+   try {
+       const { id } = req.params
+       const { text } = req.body
 
-        const comentarioActualizado = await Comment.findByIdAndUpdate(id, text, {
-            new: true,
-            runValidators: true
-        })
 
-        if(!comentarioActualizado){
-            return res.status(404).json({ error: "Comentario no encontrado" })
-        }
+       const comentarioActualizado = await Comment.findByIdAndUpdate(id, { text }, {
+           new: true,
+           runValidators: true
+       })
 
-        res.status(200).json({ message: "Comentario actualizado exitosamente"});
 
-    } catch (error) {
-        res.status(500).json({ error: error.message})
-    }
+       if(!comentarioActualizado){
+           return res.status(404).json({ error: "Comentario no encontrado" })
+       }
+
+
+       res.status(200).json({ message: "Comentario actualizado exitosamente"});
+
+
+   } catch (error) {
+       res.status(500).json({ error: error.message})
+   }
 }
+
 
 const eliminarComentario = async (req, res) => {
     try {

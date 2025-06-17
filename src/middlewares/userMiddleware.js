@@ -1,4 +1,4 @@
-const User = require('../models/user')
+const  User = require('../models/user')
 
 const existeUsuario = async (req, res, next) =>{
     const { id } = req.params

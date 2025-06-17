@@ -14,9 +14,9 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post_Images'
     }],
-    tags: [{
+    comment: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tag'
+        ref: 'comment'
     }]
 })
 

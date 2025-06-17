@@ -28,8 +28,8 @@ const crearUsuario = async (req,res) =>{
 const actualizarUsuario = async(req,res) =>{
     try {
         const { id } = req.params
-        const { nickName , email } = req.body
-        const usuario = await User.findByIdAndUpdate(id, {nickName: nickName, email:email})
+        const { nickName , email, password } = req.body
+        const usuario = await User.findByIdAndUpdate(id, {nickName: nickName, email:email, password:password})
         await usuario.save()
         res.status(201).json({message: 'Usuario actualizado exitosamente'})
     } catch (error) {
@@ -42,7 +42,7 @@ const eliminarUsuario = async (req, res) =>{
     try {
         const { id } = req.params
         await User.findByIdAndDelete(id)
-        res.status(204)
+        res.status(204).send()
     } catch (error) {
         res.status(500).json({error: error.message})
     }

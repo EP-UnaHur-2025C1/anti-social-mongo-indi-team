@@ -6,8 +6,8 @@ const postController = require('../controllers/postController')
 router.get("/", postController.obtenerPosts)
 router.post("/", postController.crearPost)
 router.put("/:id", postController.actualizarPost)
-router.put("/:id/imagenes/:imageId", postController.actualizarImagenPost)
+router.put("/:id/images/:imageId", postController.actualizarImagenPost)
 router.delete("/:id", postController.eliminarPost)
-router.delete("/:id/imagenes/:imageId", postController.eliminarImagenPost)
+router.delete("/:id/images/:imageId", postController.eliminarImagenPost)
 
 module.exports = router;
