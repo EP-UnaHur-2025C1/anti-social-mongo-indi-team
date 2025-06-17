@@ -1,4 +1,4 @@
-const Tag  = require('../models/tag') //solo modifique aca
+const Tag  = require('../models/tag')
 
 const obtenerTags = async (req, res) => {
    try {
@@ -17,7 +17,7 @@ const crearTag = async (req, res) => {
    try {
        const tag = new Tag(req.body)
        await tag.save()
-       res.status(201).json({message: 'Etiqueta creada exitosamente'}, tag)
+       res.status(201).json({message: 'Etiqueta creada exitosamente', tag})
 
 
    } catch (error) {
@@ -67,12 +67,4 @@ module.exports = {
    crearTag,
    actualizarTag,
    eliminarTag
-}
-
-
-module.exports = {
-    obtenerTags,
-    crearTag,
-    actualizarTag,
-    eliminarTag
 }

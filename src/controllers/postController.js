@@ -1,6 +1,7 @@
 const Post = require('../models/post');
 const Post_Images = require('../models/Post_Images');
 
+
 const obtenerPosts = async (req, res) => {
    try {
        const posts = await Post.find().select('user description').populate('images' , 'id imageUrl')
@@ -50,6 +51,7 @@ const crearPost = async (req, res) => {
    res.status(500).json({ error: 'Error al crear la publicación' });
  }
 }
+
 
 const actualizarPost = async (req, res) => {
    try {
@@ -181,10 +183,10 @@ const actualizarImagenPost = async (req, res) => {
 
 
 module.exports = {
-    obtenerPosts,
-    crearPost,
-    actualizarPost,
-    eliminarPost,
-    eliminarImagenPost,
-    actualizarImagenPost
+   obtenerPosts,
+   crearPost,
+   actualizarPost,
+   eliminarPost,
+   eliminarImagenPost,
+   actualizarImagenPost
 }

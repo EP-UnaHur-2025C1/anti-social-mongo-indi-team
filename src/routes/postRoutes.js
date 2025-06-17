@@ -2,6 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const postController = require('../controllers/postController')
 
+
 //rutas
 router.get("/", postController.obtenerPosts)
 router.post("/", postController.crearPost)
