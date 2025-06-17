@@ -18,6 +18,7 @@ const postRouter = require('./routes/postRoutes')
 const post_ImagesRouter = require('./routes/post_ImagesRoutes')
 const tagRouter = require('./routes/tagRoutes')
 const commentRouter = require('./routes/commentRoutes')
+const commentTagsRouter = require('./routes/commentTagsRoutes')
 
 //rutas
 app.use('/usuarios', userRouter)
@@ -25,6 +26,7 @@ app.use('/posts', postRouter)
 app.use('/post_Images', post_ImagesRouter)
 app.use('/tags', tagRouter)
 app.use('/comments', commentRouter)
+app.use('/comment-tags', commentTagsRouter)
 
 //Configuracion del Swagger
 const docSwagger = YAML.load(path.join(__dirname, '..', 'swagger.yaml'))

@@ -11,5 +11,4 @@ router.put('/:id', userMiddleware.existeUsuario, userController.actualizarUsuari
 router.delete('/:id' , userMiddleware.existeUsuario, userController.eliminarUsuario)
 
 
-
 module.exports = router
