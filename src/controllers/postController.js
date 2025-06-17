@@ -1,10 +1,11 @@
 const Post = require('../models/post');
 const Post_Images = require('../models/Post_Images');
+const User = require('../models/user')
 
 
 const obtenerPosts = async (req, res) => {
    try {
-       const posts = await Post.find().select('user description').populate('images' , 'id imageUrl')
+       const posts = await Post.find().select('-__v').populate('images', '-__v').populate('tags' , '-__v')
        if(!posts){
            res.status(204).json({message: 'No hay contenido' })
        }
@@ -17,39 +18,41 @@ const obtenerPosts = async (req, res) => {
 
 
 const crearPost = async (req, res) => {
- try {
-   const { userId, description, images } = req.body
+    try {
+    const { userId, description, images } = req.body
+
+    const user = await User.findById(userId)
+    if(!user){
+        return res.status(404).json({message: 'Usuario no encontrado'})
+    }
+   
+    const nuevoPost = new Post({
+        userId,
+        description
+    });
+    await nuevoPost.save();
 
 
-   const nuevoPost = new Post({
-     userId,
-     description
-   });
-   await nuevoPost.save();
+    if (images && Array.isArray(images) && images.length > 0) {
+        const imagenes = images.map(img => ({
+            postId: nuevoPost._id,
+            imageUrl: img.imageUrl
+        }));
 
 
-   if (images && Array.isArray(images) && images.length > 0) {
-     const imagenes = images.map(img => ({
-       postId: nuevoPost._id,
-       imageUrl: img.imageUrl
-     }));
+        const imagenesGuardadas = await Post_Images.insertMany(imagenes);
+
+        nuevoPost.images = imagenesGuardadas.map(img => img._id);
+        await nuevoPost.save();
+    }
+    const postConImagenes = await Post.findById(nuevoPost._id).populate('images').select('id userId description images');
 
 
-     const imagenesGuardadas = await Post_Images.insertMany(imagenes);
-
-
-     nuevoPost.images = imagenesGuardadas.map(img => img._id);
-     await nuevoPost.save();
-   }
-   const postConImagenes = await Post.findById(nuevoPost._id)
-     .populate('images').select('id userId description images');
-
-
-   return res.status(201).json({message: "Publicación creada exitosamente", postConImagenes});
- } catch (error) {
-   console.error(error);
-   res.status(500).json({ error: 'Error al crear la publicación' });
- }
+    return res.status(201).json({message: "Publicación creada exitosamente", postConImagenes});
+    }catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al crear la publicación' });
+    }
 }
 
 

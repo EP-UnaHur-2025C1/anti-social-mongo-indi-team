@@ -4,12 +4,12 @@ const Tag = require('../models/tag')
 const obtenerCommentsTags = async (req,res) =>{
     try{
         const postId = req.params.postId
-        const post = await Post.findById(postId).populate('tags');
+        const post = await Post.findById(postId).populate('tags' ,'id name');
         if(!post){
             return res.status(404).json({message: 'Post no encontrado'})
         }
         if(post.tags.length === 0){
-            return res.status(204).json({message: 'No hay tags asociados a este post'})
+            return res.status(201).json({message: 'No hay tags asociados a este post'})
         }
         res.status(200).json(post.tags);
     }catch(error){
