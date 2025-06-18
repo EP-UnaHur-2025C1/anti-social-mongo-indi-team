@@ -19,7 +19,6 @@ const crearTag = async (req, res) => {
        await tag.save()
        res.status(201).json({message: 'Etiqueta creada exitosamente', tag})
 
-
    } catch (error) {
        res.status(400).json({error: "Error al crear la etiqueta"})
    }
@@ -33,11 +32,8 @@ const actualizarTag = async (req, res) => {
        if(!name){
            return res.status(400).json({ error: "Solicitud incorrecta" })
        }
-       const tag = await Tag.findByIdAndUpdate(id, {name: name}, {new: true, runValidators: true})
-      
-       if(!tag){
-           return res.status(404).json({ error: "Etiqueta no encontrada" })
-       }
+       await Tag.findByIdAndUpdate(id, {name: name}, {new: true, runValidators: true})
+
        res.status(200).json({ message: "Etiqueta actualizada exitosamente"})
    } catch (error) {
        res.status(500).json({ error: error.message})
@@ -48,13 +44,8 @@ const actualizarTag = async (req, res) => {
 const eliminarTag = async (req, res) => {
    try {
        const { id } = req.params
-       const tag = await Tag.findByIdAndDelete(id)
+       await Tag.findByIdAndDelete(id)
 
-
-       if(!tag){
-           return res.status(404).json({message: 'Etiqueta no encontrada'})
-       }
-      
        res.status(204).json({message: 'Etiqueta eliminada exitosamente'})
    } catch (error) {
        res.status(500).json({error: error.message})

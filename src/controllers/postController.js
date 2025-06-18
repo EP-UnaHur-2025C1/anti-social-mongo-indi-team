@@ -62,21 +62,14 @@ const actualizarPost = async (req, res) => {
        const { description, images } = req.body
 
 
-       const postActualizado = await Post.findByIdAndUpdate(id, {description: description}, {
-           new: true,
-           runValidators: true
+    await Post.findByIdAndUpdate(id, {description: description}, {
+        new: true,
+        runValidators: true
        })
-
-
-       if(!postActualizado){
-           return res.status(404).json({message: 'Publicacion no encontrada'})
-       }
-
 
        if(Array.isArray(images)){
            await Post_Images.deleteMany({postId: id})
        }
-
 
        if(images.length > 0){
            const imagenesPost = images.map( url => ({
@@ -85,7 +78,6 @@ const actualizarPost = async (req, res) => {
            }))
            await Post_Images.insertMany(imagenesPost)
        }
-
 
        const post = await Post.findById(id).populate('images', 'imageUrl')
        res.status(200).json({message: 'Publicacion actualizada exitosamente'}, post);
@@ -98,18 +90,12 @@ const actualizarPost = async (req, res) => {
 const eliminarPost = async (req, res) => {
    try {
        const { id } = req.params
-       const post = await Post.findByIdAndDelete(id).select('id userId description')
-
-
-       if(!post){
-           return res.status(404).json({message: 'Publicacion no encontrada'})
-       }
-      
+       await Post.findByIdAndDelete(id).select('id userId description')
        await Post_Images.deleteMany({
            postId: id
        })
 
-       res.status(200).json({message: 'Publicación eliminada', post});
+       res.status(200).json({message: 'Publicación eliminada'});
    } catch (error) {
        res.status(500).json({error: 'Error al eliminar la publicación'});
    }
@@ -121,28 +107,15 @@ const eliminarImagenPost = async (req, res) => {
        const postId = req.params.id
        const imageId = req.params.imageId
        const post = await Post.findById(postId)
-       if(!post){
-           return res.status(404).json({message: 'Publicacion no encontrada'});
-       }
 
-
-       const imagenEliminada = await Post_Images.findOneAndDelete({
-           _id: imageId,
-           postId: postId
-       })
-
+       const imagenEliminada = await Post_Images.findOneAndDelete({_id: imageId,})
 
        if(!imagenEliminada){
            return res.status(404).json({message: 'Imagen no encontrada'})
        }
-
-
        post.images.pull(imageId)
        await post.save()
-
-
        res.status(200).json({message: 'Imagen eliminada exitosamente'})
-
 
    } catch (error) {
        res.status(500).json({error: 'Error al eliminar la imagen'})
@@ -152,24 +125,20 @@ const eliminarImagenPost = async (req, res) => {
 
 const actualizarImagenPost = async (req, res) => {
     try {
-         const postId = req.params.id
          const imageId = req.params.imageId
          const { imageUrl } = req.body
-            const post = await Post.findById(postId)
-            if(!post){
-                return res.status(404).json({message: 'Publicacion no encontrada'});
-            }
-            const imagenActualizada = await Post_Images.findOneAndUpdate(
-                { _id: imageId, postId: postId },
-                { imageUrl: imageUrl },
-                { new: true, runValidators: true }
-            )
-            if(!imagenActualizada){
-                return res.status(404).json({message: 'Imagen no encontrada'})
-            }
-            res.status(200).json({message: 'Imagen actualizada exitosamente', imagen: imagenActualizada})
+
+        const imagenActualizada = await Post_Images.findOneAndUpdate(
+            { _id: imageId},
+            { imageUrl: imageUrl },
+            { new: true, runValidators: true }
+        )
+        if(!imagenActualizada){
+            return res.status(404).json({message: 'Imagen no encontrada'})
         }
-    catch (error) {
+        res.status(200).json({message: 'Imagen actualizada exitosamente', imagen: imagenActualizada})
+    }
+    catch (error){
         res.status(500).json({error: 'Error al actualizar la imagen'})
     }
 }

@@ -32,24 +32,12 @@ const crearComentario = async (req, res) => {
 }
 
 const actualizarComentario = async (req, res) => {
-   try {
-       const { id } = req.params
-       const { text } = req.body
+    try {
+        const { id } = req.params
+        const { text } = req.body
 
-
-       const comentarioActualizado = await Comment.findByIdAndUpdate(id, { text }, {
-           new: true,
-           runValidators: true
-       })
-
-
-       if(!comentarioActualizado){
-           return res.status(404).json({ error: "Comentario no encontrado" })
-       }
-
-
-       res.status(200).json({ message: "Comentario actualizado exitosamente"});
-
+        await Comment.findByIdAndUpdate(id, { text }, {new: true, runValidators: true})
+        res.status(200).json({ message: "Comentario actualizado exitosamente"});
 
    } catch (error) {
        res.status(500).json({ error: error.message})
@@ -60,12 +48,7 @@ const actualizarComentario = async (req, res) => {
 const eliminarComentario = async (req, res) => {
     try {
         const { id } = req.params
-        const comentario = await Comment.findByIdAndDelete(id)
-        
-        if(!comentario){
-            return res.status(404).json({ error: "Comentario no encontrado" })
-        }
-        
+        await Comment.findByIdAndDelete(id)
         res.status(204).json({message: 'Comentario eliminado exitosamente'})
     } catch (error) {
         res.status(500).json({ error: error.message})
