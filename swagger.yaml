@@ -219,7 +219,7 @@ paths:
                   imagenes:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Post_Imagenes'
+                      $ref: '#/components/schemas/Post_Images'
         '400':
           description: Los campos "userId" y "description" son obligatorios
         '500':
@@ -534,7 +534,7 @@ paths:
     get:
       summary: Obtener todos los archivos de imágenes de posts
       tags:
-        - Post_Imagenes
+        - Post_Images
       responses:
         '200':
           description: Lista de archivos de imágenes
@@ -545,7 +545,7 @@ paths:
     post:
       summary: Subir un nuevo archivo de imagen de post
       tags:
-        - Post_Imagenes
+        - Post_Images
       requestBody:
         required: true
         content:
@@ -553,7 +553,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Post_Imagenes'
+                $ref: '#/components/schemas/Post_Images'
       responses:
         '200':
           description: Archivos creados exitosamente
@@ -567,14 +567,14 @@ paths:
                   archivosCreados:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Post_Imagenes'
+                      $ref: '#/components/schemas/Post_Images'
         '500':
           description: Error al eliminar los archivos
   /post_Images/{id}:
     put:
       summary: Actualizar un archivo de imagen de post por ID
       tags:
-        - Post_Imagenes
+        - Post_Images
       parameters:
         - in: path
           name: id
@@ -587,7 +587,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Post_Imagenes'
+              $ref: '#/components/schemas/Post_Images'
       responses:
         '200':
           description: Archivo actualizado
@@ -599,13 +599,13 @@ paths:
                   message:
                     type: string
                   imagen:
-                    $ref: '#/components/schemas/Post_Imagenes'
+                    $ref: '#/components/schemas/Post_Images'
         '500':
           description: Error al subir los archivos
     delete:
       summary: Eliminar un archivo de imagen de post por ID
       tags:
-        - Post_Imagenes
+        - Post_Images
       parameters:
         - in: path
           name: id
@@ -624,6 +624,6 @@ paths:
                   message:
                     type: string
                   imagen:
-                    $ref: '#/components/schemas/Post_Imagenes'
+                    $ref: '#/components/schemas/Post_Images'
         '500':
           description: Error al eliminar el archivo

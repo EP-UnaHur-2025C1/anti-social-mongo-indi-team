@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 const obtenerUsuarios = async (_,res) =>{
     try {
-        const usuarios = await User.find().select('nickName password email')
+        const usuarios = await User.find().select('-__v').populate('followers', 'nickName').populate('following', 'nickName')
         if(!usuarios){
             res.status(404).json({message: 'No se encontraron usuarios'})
         }
